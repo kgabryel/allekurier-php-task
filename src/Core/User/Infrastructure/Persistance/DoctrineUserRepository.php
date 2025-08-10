@@ -7,12 +7,14 @@ use App\Core\User\Domain\Repository\UserRepositoryInterface;
 use App\Core\User\Domain\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 class DoctrineUserRepository implements UserRepositoryInterface
 {
-    public function __construct(private readonly EntityManagerInterface $entityManager)
-    {
-    }
+    public function __construct(
+        private readonly EntityManagerInterface $entityManager,
+        private readonly EventDispatcherInterface $eventDispatcher
+    ) {}
 
     /**
      * @throws NonUniqueResultException
@@ -33,5 +35,35 @@ class DoctrineUserRepository implements UserRepositoryInterface
         }
 
         return $user;
+    }
+
+    /**
+     * @throws NonUniqueResultException
+     */
+    public function checkEmailUsage(string $email): bool
+    {
+        return $this->entityManager->createQueryBuilder()
+                ->select('1')
+                ->from(User::class, 'u')
+                ->where('u.email = :email')
+                ->setParameter(':email', $email)
+                ->setMaxResults(1)
+                ->getQuery()
+                ->getOneOrNullResult() !== null;
+    }
+
+    public function save(User $user): void
+    {
+        $this->entityManager->persist($user);
+
+        $events = $user->pullEvents();
+        foreach ($events as $event) {
+            $this->eventDispatcher->dispatch($event);
+        }
+    }
+
+    public function flush(): void
+    {
+        $this->entityManager->flush();
     }
 }
