@@ -3,6 +3,7 @@
 namespace App\Core\User\Domain;
 
 use App\Common\EventManager\EventsCollectorTrait;
+use App\Core\User\Domain\Event\UserRegisteredEvent;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -34,6 +35,7 @@ class User
         $this->id = null;
         $this->email = $email;
         $this->active = $active;
+        $this->record(new UserRegisteredEvent($this));
     }
 
     public function getEmail(): string
