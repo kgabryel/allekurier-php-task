@@ -5,7 +5,6 @@ namespace App\Core\Invoice\Application\Query\GetInvoicesByStatusAndAmountGreater
 use App\Core\Invoice\Application\DTO\InvoiceDTO;
 use App\Core\Invoice\Domain\Invoice;
 use App\Core\Invoice\Domain\Repository\InvoiceRepositoryInterface;
-use App\Core\Invoice\Domain\Status\InvoiceStatus;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler]

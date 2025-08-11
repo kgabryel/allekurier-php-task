@@ -3,7 +3,7 @@
 namespace App\Core\User\UserInterface\Cli;
 
 use App\Common\Bus\QueryBusInterface;
-use App\Core\User\Application\Command\CreateInactiveUserCommand;
+use App\Core\User\Application\Command\CreateInactiveUser\CreateInactiveUserCommand;
 use App\Core\User\Application\Query\CheckEmailUsage\CheckEmailUsageQuery;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;

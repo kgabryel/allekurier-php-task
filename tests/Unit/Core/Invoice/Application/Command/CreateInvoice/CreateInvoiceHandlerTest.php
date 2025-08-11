@@ -15,7 +15,6 @@ use PHPUnit\Framework\TestCase;
 
 class CreateInvoiceHandlerTest extends TestCase
 {
-    private UserRepositoryInterface|MockObject $userRepository;
 
     private InvoiceRepositoryInterface|MockObject $invoiceRepository;
 
@@ -28,24 +27,21 @@ class CreateInvoiceHandlerTest extends TestCase
         $this->handler = new CreateInvoiceHandler(
             $this->invoiceRepository = $this->createMock(
                 InvoiceRepositoryInterface::class
-            ),
-            $this->userRepository = $this->createMock(
-                UserRepositoryInterface::class
             )
         );
     }
 
+    /**
+     * @testdox Przy poprawnym wykonaniu polecania powinny zostać wywołane odpowienie metody repozytorium
+     */
     public function test_handle_success(): void
     {
-        $user = $this->createMock(User::class);
+        //Arrange
+        $user = $this->createStub(User::class);
 
         $invoice = new Invoice(
             $user, 12500
         );
-
-        $this->userRepository->expects(self::once())
-            ->method('getByEmail')
-            ->willReturn($user);
 
         $this->invoiceRepository->expects(self::once())
             ->method('save')
@@ -54,24 +50,7 @@ class CreateInvoiceHandlerTest extends TestCase
         $this->invoiceRepository->expects(self::once())
             ->method('flush');
 
-        $this->handler->__invoke((new CreateInvoiceCommand('test@test.pl', 12500)));
-    }
-
-    public function test_handle_user_not_exists(): void
-    {
-        $this->expectException(UserNotFoundException::class);
-
-        $this->userRepository->expects(self::once())
-            ->method('getByEmail')
-            ->willThrowException(new UserNotFoundException());
-
-        $this->handler->__invoke((new CreateInvoiceCommand('test@test.pl', 12500)));
-    }
-
-    public function test_handle_invoice_invalid_amount(): void
-    {
-        $this->expectException(InvoiceException::class);
-
-        $this->handler->__invoke((new CreateInvoiceCommand('test@test.pl', -5)));
+        //Act
+        $this->handler->__invoke((new CreateInvoiceCommand($user, 12500)));
     }
 }

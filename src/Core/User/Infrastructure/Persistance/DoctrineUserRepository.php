@@ -2,9 +2,11 @@
 
 namespace App\Core\User\Infrastructure\Persistance;
 
+use App\Core\User\Domain\Aggregate\EmailCollection;
 use App\Core\User\Domain\Exception\UserNotFoundException;
 use App\Core\User\Domain\Repository\UserRepositoryInterface;
 use App\Core\User\Domain\User;
+use App\Core\User\Domain\UserStatus;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -65,5 +67,26 @@ class DoctrineUserRepository implements UserRepositoryInterface
     public function flush(): void
     {
         $this->entityManager->flush();
+    }
+
+    public function findUsersEmailByStatus(UserStatus $userStatus): EmailCollection
+    {
+        return new EmailCollection(
+            ...array_column(
+                $this->entityManager->createQueryBuilder()
+                    ->select('u.email')
+                    ->from(User::class, 'u')
+                    ->where('u.active = :active')
+                    ->setParameter(':active', $this->statusToBool($userStatus))
+                    ->getQuery()
+                    ->getArrayResult(),
+                'email'
+            )
+        );
+    }
+
+    private function statusToBool(UserStatus $userStatus): bool
+    {
+        return $userStatus === UserStatus::ACTIVE;
     }
 }

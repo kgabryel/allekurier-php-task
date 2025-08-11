@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Core\User\Application\Command;
+namespace App\Core\User\Application\Command\CreateInactiveUser;
 
 use App\Core\User\Domain\Repository\UserRepositoryInterface;
 use App\Core\User\Domain\User;
