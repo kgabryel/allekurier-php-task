@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
 class SendEmailInvoiceCreatedEventSubscriberListenerTest extends TestCase
 {
     /**
-     * @Powinien zostać wysłany e-mail - zostać wywołany notificator z odpowiednimi parametrami
+     * @testDox Powinien zostać wysłany e-mail - zostać wywołany notificator z odpowiednimi parametrami
      */
     public function test_handle_success(): void
     {
