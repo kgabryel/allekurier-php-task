@@ -1,7 +1,7 @@
 doctrine:
     dbal:
         url: '%env(resolve:DATABASE_URL)%'
-        server_version: '5.7'
+        server_version: '5.7.44'
     orm:
         auto_generate_proxy_classes: true
         enable_lazy_ghost_objects: true
@@ -12,12 +12,12 @@ doctrine:
         mappings:
             Invoice:
                 is_bundle: false
-                type: annotation
+                type: attribute
                 dir: '%kernel.project_dir%/src/Core/Invoice/Domain'
                 prefix: App\Core\Invoice\Domain\Invoice
             User:
                 is_bundle: false
-                type: annotation
+                type: attribute
                 dir: '%kernel.project_dir%/src/Core/User/Domain'
                 prefix: App\Core\User\Domain\User
 
